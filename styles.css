@@ -1,0 +1,137 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    position: relative; /* For absolute positioning of toggle buttons */
+}
+
+#language-selection {
+    text-align: center;
+    padding: 20px;
+    position: relative; /* For positioning the language toggle button */
+}
+
+.language-buttons {
+    margin-top: 20px;
+}
+
+.language-btn {
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-block; /* Ensure buttons are inline by default */
+}
+
+#movie-list {
+    display: flex; /* Reverted to flex for side-by-side movies */
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    position: relative; /* Ensure positioning context */
+}
+
+#movie-list > div:first-child {
+    width: 100%; /* Ensure the heading container spans full width */
+    margin-bottom: 20px; /* Space between heading and movies */
+}
+
+.movie {
+    border: 1px solid #ccc;
+    margin: 10px;
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+}
+
+.movie img {
+    max-width: 100%;
+    display: block; /* Ensure image is a block element */
+}
+
+.movie h2 {
+    margin: 10px 0 5px; /* Add spacing above and below the title */
+    font-size: 1.2em;
+}
+
+.movie p {
+    margin: 5px 0; /* Consistent spacing for other details */
+}
+
+#pagination {
+    text-align: center;
+    padding: 10px;
+}
+
+button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+button.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    margin: 0;
+    font-size: 2em;
+    color: #333;
+}
+
+.toggle-btn {
+    position: absolute;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.toggle-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.toggle-btn.toggled {
+    background-color: #000000; /* Black background when toggled */
+    color: white; /* White text for contrast */
+}
+
+/* Language toggle button positioning */
+#toggle-lang-btn {
+    top: 20px;
+    right: 20px;
+}
+
+/* OTT toggle button positioning */
+#toggle-ott-btn {
+    top: 20px;
+    right: 20px;
+}
+
+/* Media Query for Mobile Devices (below 600px) */
+@media (max-width: 600px) {
+    .movie {
+        width: 150px; /* Reduce card size on small screens */
+    }
+    #movie-list {
+        padding: 60px 10px 10px; /* Increase top padding to accommodate heading and button */
+    }
+    .toggle-btn {
+        top: 10px; /* Move buttons closer to top */
+        right: 10px; /* Move buttons closer to right edge */
+        padding: 8px 15px; /* Reduce padding */
+        font-size: 14px; /* Reduce font size */
+    }
+    #pagination button {
+        margin: 2px;
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+    #language-selection {
+        padding: 40px 10px 10px; /* Increase top padding for language toggle */
+    }
+}
