@@ -112,6 +112,23 @@ h1 {
     right: 20px;
 }
 
+/* Home button positioning */
+.home-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px; /* Place on the left side to avoid overlap with toggle buttons */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.home-btn:hover {
+    background-color: #e0e0e0;
+}
+
 /* Media Query for Mobile Devices (below 600px) */
 @media (max-width: 600px) {
     .movie {
@@ -123,6 +140,12 @@ h1 {
     .toggle-btn {
         top: 10px; /* Move buttons closer to top */
         right: 10px; /* Move buttons closer to right edge */
+        padding: 8px 15px; /* Reduce padding */
+        font-size: 14px; /* Reduce font size */
+    }
+    .home-btn {
+        top: 10px; /* Move button closer to top */
+        left: 10px; /* Move button closer to left edge */
         padding: 8px 15px; /* Reduce padding */
         font-size: 14px; /* Reduce font size */
     }

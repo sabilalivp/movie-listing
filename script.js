@@ -197,6 +197,19 @@ ottToggleButton.addEventListener('click', () => {
     fetchMovies(language, currentPage); // Re-render with the current page
 });
 
+// Home button event listener
+const homeButton = document.getElementById('home-btn');
+homeButton.addEventListener('click', () => {
+    document.getElementById('language-selection').style.display = 'block'; // Show language selection
+    document.getElementById('movie-list').innerHTML = ''; // Clear movie list
+    document.getElementById('pagination').innerHTML = ''; // Clear pagination
+    currentLanguage = null; // Reset current language
+    currentPage = 1; // Reset page
+    allMovies = []; // Reset movies
+    showOttOnly = false; // Reset OTT toggle
+    ottToggleButton.classList.remove('toggled'); // Reset OTT button color
+});
+
 // Initial call with event listener
 document.querySelectorAll('.language-btn').forEach(button => {
     button.addEventListener('click', () => {
