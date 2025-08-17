@@ -8,7 +8,7 @@ body {
 #language-selection {
     text-align: center;
     padding: 20px;
-    position: relative; /* For positioning the language toggle button */
+    position: relative; /* For positioning */
 }
 
 .language-buttons {
@@ -65,7 +65,7 @@ body {
 
 button {
     margin: 0 5px;
-    padding: 5px 10px;
+    padding: 10px 20px; /* Ensure consistent size with toggle and home buttons */
     cursor: pointer;
 }
 
@@ -83,7 +83,7 @@ h1 {
 
 .toggle-btn {
     position: absolute;
-    padding: 10px 20px;
+    padding: 10px 20px; /* Match button size */
     font-size: 16px;
     cursor: pointer;
     background-color: #f0f0f0;
@@ -100,33 +100,16 @@ h1 {
     color: white; /* White text for contrast */
 }
 
-/* Language toggle button positioning */
-#toggle-lang-btn {
-    top: 20px;
-    right: 20px;
-}
-
-/* OTT toggle button positioning */
+/* OTT toggle button positioning (dynamic) */
 #toggle-ott-btn {
     top: 20px;
     right: 20px;
 }
 
-/* Home button positioning */
-.home-btn {
-    position: absolute;
+/* Home button positioning (dynamic) */
+#home-btn {
     top: 20px;
-    left: 20px; /* Place on the left side to avoid overlap with toggle buttons */
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.home-btn:hover {
-    background-color: #e0e0e0;
+    left: 20px;
 }
 
 /* Media Query for Mobile Devices (below 600px) */
@@ -135,17 +118,17 @@ h1 {
         width: 150px; /* Reduce card size on small screens */
     }
     #movie-list {
-        padding: 60px 10px 10px; /* Increase top padding to accommodate heading and button */
+        padding: 60px 10px 10px; /* Increase top padding to accommodate heading and buttons */
     }
     .toggle-btn {
-        top: 10px; /* Move buttons closer to top */
-        right: 10px; /* Move buttons closer to right edge */
+        top: 10px;
+        right: 10px;
         padding: 8px 15px; /* Reduce padding */
         font-size: 14px; /* Reduce font size */
     }
-    .home-btn {
-        top: 10px; /* Move button closer to top */
-        left: 10px; /* Move button closer to left edge */
+    #home-btn {
+        top: 10px;
+        left: 10px;
         padding: 8px 15px; /* Reduce padding */
         font-size: 14px; /* Reduce font size */
     }
@@ -155,6 +138,6 @@ h1 {
         font-size: 12px;
     }
     #language-selection {
-        padding: 40px 10px 10px; /* Increase top padding for language toggle */
+        padding: 20px 10px 10px; /* Reduced top padding since toggle is removed */
     }
 }
