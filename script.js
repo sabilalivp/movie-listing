@@ -1,15 +1,15 @@
-// Assuming this is defined globally
 const apiKey = '1311d6873719998c3cc5f8cfad531d84';
 let currentLanguage = null;
-let allMovies = []; // Single declaration
+let allMovies = [];
 const manualMovies = [
-    { title: "Drishyam 2", release_date: "2021-02-19", ott: "Amazon Prime", rating: 8.4, poster_path: "/eW9oQikv0e8e1UIB5J6e8cQ5k2r.jpg", original_language: "ml" }
+    { title: "Drishyam 2", release_date: "2021-02-19", ott: "Amazon Prime", rating: 8.4, poster_path: "/eW9oQikv0e8e1UIB5J6e8cQ5k2r.jpg", original_language: "ml" },
+    { title: "Pushpa: The Rise", release_date: "2021-12-17", ott: "Amazon Prime", rating: 7.6, poster_path: "/3aW0qXzM3qQh7Bh1hI3bSk3dMbt.jpg", original_language: "te" }
 ];
 
 let currentPage = 1;
 let totalPages = 1;
-let totalResults = 0; // Add to store total results globally
-let showOttOnly = false; // Toggle state for OTT-only filter
+let totalResults = 0;
+let showOttOnly = false;
 
 async function fetchMovies(language, page = 1) {
     const movieList = document.getElementById('movie-list');
@@ -20,22 +20,20 @@ async function fetchMovies(language, page = 1) {
     movieList.innerHTML = '<p>Loading movies...</p>';
 
     try {
-        // Fetch the first page to get total results if not already fetched
         if (page === 1) {
             const firstResponse = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=${language}&sort_by=primary_release_date.desc&page=1`);
             if (!firstResponse.ok) throw new Error(`HTTP error! status: ${firstResponse.status}`);
             const firstData = await firstResponse.json();
             console.log(`First response for ${language}:`, firstData);
             totalResults = firstData.total_results;
-            totalPages = Math.ceil(totalResults / 40) || 1; // 40 movies per page (2 pages of 20)
+            totalPages = Math.ceil(totalResults / 40) || 1;
             console.log(`Total pages for ${language}: ${totalPages}, Total results: ${totalResults}`);
-            allMovies = []; // Reset movies on new language or page 1
+            allMovies = [];
         }
 
-        // Fetch multiple pages to approximate 40 movies per "page"
         const moviesPerPage = 40;
-        const startPage = (Math.floor((page - 1) * (moviesPerPage / 20)) + 1); // Calculate starting API page
-        const endPage = Math.min(startPage + 1, Math.ceil(totalResults / 20)); // Fetch 2 pages
+        const startPage = (Math.floor((page - 1) * (moviesPerPage / 20)) + 1);
+        const endPage = Math.min(startPage + 1, Math.ceil(totalResults / 20));
         const fetchedMovies = [];
 
         for (let p = startPage; p <= endPage; p++) {
@@ -49,13 +47,11 @@ async function fetchMovies(language, page = 1) {
 
         allMovies = [...allMovies, ...fetchedMovies];
 
-        // Add manual movies for the selected language (only on first page)
         if (page === 1) {
             allMovies = [...allMovies, ...manualMovies.filter(m => m.original_language === language)];
             console.log(`Total movies after manual add for ${language}:`, allMovies.length);
         }
 
-        // Fetch OTT platforms concurrently for the current batch's movies
         const movieBatch = fetchedMovies;
         await Promise.all(movieBatch.map(async (movie, index) => {
             console.log(`Processing OTT for ${movie.title || 'Unnamed movie'} at index ${index} on page ${page}`);
@@ -63,7 +59,7 @@ async function fetchMovies(language, page = 1) {
                 try {
                     const providersUrl = `https://api.themoviedb.org/3/movie/${movie.id}/watch/providers?api_key=${apiKey}`;
                     const controller = new AbortController();
-                    const timeout = setTimeout(() => controller.abort(), 5000); // 5-second timeout
+                    const timeout = setTimeout(() => controller.abort(), 5000);
                     const providersResponse = await fetch(providersUrl, { signal: controller.signal });
                     clearTimeout(timeout);
                     if (!providersResponse.ok) throw new Error(`Providers error! status: ${providersResponse.status}`);
@@ -78,16 +74,14 @@ async function fetchMovies(language, page = 1) {
             }
         }));
 
-        // Render the heading, buttons, and current page's movies (40 per page)
         const headingContainer = document.createElement('div');
-        headingContainer.style.textAlign = 'center'; // Center-align the container
+        headingContainer.style.textAlign = 'center';
         const heading = document.createElement('h1');
-        heading.textContent = `${language === 'ml' ? 'Malayalam' : language === 'hi' ? 'Hindi' : language === 'ta' ? 'Tamil' : 'Movies'} movies`;
+        heading.textContent = `${language === 'ml' ? 'Malayalam' : language === 'hi' ? 'Hindi' : language === 'ta' ? 'Tamil' : language === 'te' ? 'Telugu' : 'Movies'} movies`;
         headingContainer.appendChild(heading);
-        movieList.innerHTML = ''; // Clear loading message
+        movieList.innerHTML = '';
         movieList.appendChild(headingContainer);
 
-        // Reuse or create toggle button (top right)
         let ottToggleButton = document.getElementById('toggle-ott-btn');
         if (!ottToggleButton) {
             ottToggleButton = document.createElement('button');
@@ -99,9 +93,8 @@ async function fetchMovies(language, page = 1) {
             ottToggleButton.style.right = '20px';
             movieList.appendChild(ottToggleButton);
         }
-        ottToggleButton.classList.toggle('toggled', showOttOnly); // Sync class with current state
+        ottToggleButton.classList.toggle('toggled', showOttOnly);
 
-        // Reuse or create home button (top left)
         let homeButton = document.getElementById('home-btn');
         if (!homeButton) {
             homeButton = document.createElement('button');
@@ -125,7 +118,6 @@ async function fetchMovies(language, page = 1) {
             return;
         }
 
-        // Clear existing movies before adding new ones
         const existingMovies = movieList.querySelectorAll('.movie');
         existingMovies.forEach(movie => movie.remove());
 
@@ -143,11 +135,10 @@ async function fetchMovies(language, page = 1) {
             movieList.appendChild(movieDiv);
         }
 
-        // Add or update pagination buttons
         const pagination = document.getElementById('pagination');
         pagination.innerHTML = '';
 
-        const maxButtons = 10; // Limit to 10 page buttons at a time
+        const maxButtons = 10;
         const startPageNum = Math.max(1, currentPage - Math.floor(maxButtons / 2));
         const endPageNum = Math.min(totalPages, startPageNum + maxButtons - 1);
 
@@ -174,10 +165,9 @@ async function fetchMovies(language, page = 1) {
             });
             pagination.appendChild(nextButton);
         } else {
-            pagination.innerHTML += `<div>Showing all ${allMovies.length} ${language === 'ml' ? 'Malayalam' : language === 'hi' ? 'Hindi' : language === 'ta' ? 'Tamil' : ''} movies</div>`;
+            pagination.innerHTML += `<div>Showing all ${allMovies.length} ${language === 'ml' ? 'Malayalam' : language === 'hi' ? 'Hindi' : language === 'ta' ? 'Tamil' : language === 'te' ? 'Telugu' : ''} movies</div>`;
         }
 
-        // Re-add event listeners after rendering
         addOttToggleListener();
         addHomeButtonListener();
     } catch (error) {
@@ -191,7 +181,7 @@ async function fetchMovies(language, page = 1) {
             const headingContainer = document.createElement('div');
             headingContainer.style.textAlign = 'center';
             const heading = document.createElement('h1');
-            heading.textContent = `${language === 'ml' ? 'Malayalam' : language === 'hi' ? 'Hindi' : language === 'ta' ? 'Tamil' : 'Movies'} movies`;
+            heading.textContent = `${language === 'ml' ? 'Malayalam' : language === 'hi' ? 'Hindi' : language === 'ta' ? 'Tamil' : language === 'te' ? 'Telugu' : 'Movies'} movies`;
             headingContainer.appendChild(heading);
             movieList.appendChild(headingContainer);
 
@@ -233,7 +223,6 @@ async function fetchMovies(language, page = 1) {
                 movieList.appendChild(movieDiv);
             }
 
-            // Re-add event listeners in catch block
             addOttToggleListener();
             addHomeButtonListener();
         }
@@ -241,12 +230,11 @@ async function fetchMovies(language, page = 1) {
     }
 }
 
-// Toggle button event listener for OTT
 function addOttToggleListener() {
     const ottToggleButton = document.getElementById('toggle-ott-btn');
     if (ottToggleButton) {
         console.log('OTT Toggle button found, adding listener');
-        ottToggleButton.removeEventListener('click', ottToggleButton.listener); // Remove old listener to avoid duplicates
+        ottToggleButton.removeEventListener('click', ottToggleButton.listener);
         ottToggleButton.listener = () => {
             showOttOnly = !showOttOnly;
             console.log('Toggle state changed to:', showOttOnly);
@@ -262,35 +250,33 @@ function addOttToggleListener() {
     }
 }
 
-// Home button event listener
 function addHomeButtonListener() {
     const homeButton = document.getElementById('home-btn');
     if (homeButton) {
         homeButton.addEventListener('click', () => {
-            document.getElementById('language-selection').style.display = 'block'; // Show language selection
-            document.getElementById('movie-list').innerHTML = ''; // Clear movie list
-            document.getElementById('pagination').innerHTML = ''; // Clear pagination
-            currentLanguage = null; // Reset current language
-            currentPage = 1; // Reset page
-            allMovies = []; // Reset movies
-            showOttOnly = false; // Reset OTT toggle
+            document.getElementById('language-selection').style.display = 'block';
+            document.getElementById('movie-list').innerHTML = '';
+            document.getElementById('pagination').innerHTML = '';
+            currentLanguage = null;
+            currentPage = 1;
+            allMovies = [];
+            showOttOnly = false;
             const ottToggleButton = document.getElementById('toggle-ott-btn');
-            if (ottToggleButton) ottToggleButton.classList.remove('toggled'); // Reset OTT button color
+            if (ottToggleButton) ottToggleButton.classList.remove('toggled');
         });
     } else {
         console.error('Home button not found in the document.');
     }
 }
 
-// Initial call with event listener
 document.querySelectorAll('.language-btn').forEach(button => {
     button.addEventListener('click', () => {
         console.log(`Button clicked for language: ${button.getAttribute('data-language')}`);
         const language = button.getAttribute('data-language');
         currentLanguage = language;
         currentPage = 1;
-        allMovies = []; // Reset movies on language change
-        showOttOnly = false; // Reset toggle state
+        allMovies = [];
+        showOttOnly = false;
         document.getElementById('language-selection').style.display = 'none';
         fetchMovies(language, currentPage);
     });

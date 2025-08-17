@@ -2,13 +2,13 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    position: relative; /* For absolute positioning of toggle buttons */
+    position: relative;
 }
 
 #language-selection {
     text-align: center;
     padding: 20px;
-    position: relative; /* For positioning */
+    position: relative;
 }
 
 .language-buttons {
@@ -20,22 +20,22 @@ body {
     margin: 0 10px;
     font-size: 16px;
     cursor: pointer;
-    display: inline-block; /* Ensure buttons are inline by default */
+    display: inline-block;
 }
 
 #movie-list {
-    display: flex; /* Reverted to flex for side-by-side movies */
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    padding: 60px 20px 20px; /* Increased top padding to accommodate buttons */
-    position: relative; /* Ensure positioning context */
+    padding: 60px 20px 20px;
+    position: relative;
 }
 
 #movie-list > div:first-child {
-    width: 100%; /* Ensure the heading container spans full width */
-    margin-bottom: 20px; /* Space between heading and movies */
-    position: relative; /* Ensure heading stays at top */
-    top: 0; /* Force to top */
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+    top: 0;
 }
 
 .movie {
@@ -48,16 +48,16 @@ body {
 
 .movie img {
     max-width: 100%;
-    display: block; /* Ensure image is a block element */
+    display: block;
 }
 
 .movie h2 {
-    margin: 10px 0 5px; /* Add spacing above and below the title */
+    margin: 10px 0 5px;
     font-size: 1.2em;
 }
 
 .movie p {
-    margin: 5px 0; /* Consistent spacing for other details */
+    margin: 5px 0;
 }
 
 #pagination {
@@ -67,7 +67,7 @@ body {
 
 button {
     margin: 0 5px;
-    padding: 10px 20px; /* Ensure consistent size with toggle and home buttons */
+    padding: 10px 20px;
     cursor: pointer;
 }
 
@@ -85,55 +85,52 @@ h1 {
 
 .toggle-btn {
     position: absolute;
-    padding: 10px 20px; /* Match button size */
+    padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #f0f0f0; /* Original color (light gray) */
+    background-color: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    transition: background-color 0.3s; /* Smooth color transition */
+    transition: background-color 0.3s;
 }
 
 .toggle-btn:hover {
-    background-color: #e0e0e0; /* Hover effect */
+    background-color: #e0e0e0;
 }
 
 #toggle-ott-btn.toggled {
-    background-color: #4CAF50 !important; /* Green when toggled, force with !important */
-    color: white !important; /* White text for contrast */
+    background-color: #4CAF50 !important;
+    color: white !important;
 }
 
-/* OTT toggle button positioning (dynamic) */
 #toggle-ott-btn {
     top: 20px;
     right: 20px;
 }
 
-/* Home button positioning (dynamic) */
 #home-btn {
     top: 20px;
     left: 20px;
 }
 
-/* Media Query for Mobile Devices (below 600px) */
 @media (max-width: 600px) {
     .movie {
-        width: 150px; /* Reduce card size on small screens */
+        width: 150px;
     }
     #movie-list {
-        padding: 60px 10px 10px; /* Maintain top padding to accommodate buttons */
+        padding: 60px 10px 10px;
     }
     .toggle-btn {
         top: 10px;
         right: 10px;
-        padding: 8px 15px; /* Reduce padding */
-        font-size: 14px; /* Reduce font size */
+        padding: 8px 15px;
+        font-size: 14px;
     }
     #home-btn {
         top: 10px;
         left: 10px;
-        padding: 8px 15px; /* Reduce padding */
-        font-size: 14px; /* Reduce font size */
+        padding: 8px 15px;
+        font-size: 14px;
     }
     #pagination button {
         margin: 2px;
@@ -141,6 +138,6 @@ h1 {
         font-size: 12px;
     }
     #language-selection {
-        padding: 20px 10px 10px; /* Reduced top padding since toggle is removed */
+        padding: 20px 10px 10px;
     }
 }
