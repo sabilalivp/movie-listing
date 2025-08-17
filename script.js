@@ -79,33 +79,40 @@ async function fetchMovies(language, page = 1) {
         }));
 
         // Render the heading, buttons, and current page's movies (40 per page)
-        movieList.innerHTML = ''; // Clear existing content
         const headingContainer = document.createElement('div');
         headingContainer.style.textAlign = 'center'; // Center-align the container
         const heading = document.createElement('h1');
         heading.textContent = `${language === 'ml' ? 'Malayalam' : language === 'hi' ? 'Hindi' : language === 'ta' ? 'Tamil' : 'Movies'} movies`;
         headingContainer.appendChild(heading);
+        movieList.innerHTML = ''; // Clear loading message
         movieList.appendChild(headingContainer);
 
-        // Add toggle button (top right)
-        const ottToggleButton = document.createElement('button');
-        ottToggleButton.id = 'toggle-ott-btn';
-        ottToggleButton.className = 'toggle-btn';
-        ottToggleButton.textContent = 'Toggle OTT Only';
-        ottToggleButton.style.position = 'absolute';
-        ottToggleButton.style.top = '20px';
-        ottToggleButton.style.right = '20px';
-        movieList.appendChild(ottToggleButton);
+        // Reuse or create toggle button (top right)
+        let ottToggleButton = document.getElementById('toggle-ott-btn');
+        if (!ottToggleButton) {
+            ottToggleButton = document.createElement('button');
+            ottToggleButton.id = 'toggle-ott-btn';
+            ottToggleButton.className = 'toggle-btn';
+            ottToggleButton.textContent = 'Toggle OTT Only';
+            ottToggleButton.style.position = 'absolute';
+            ottToggleButton.style.top = '20px';
+            ottToggleButton.style.right = '20px';
+            movieList.appendChild(ottToggleButton);
+        }
+        ottToggleButton.classList.toggle('toggled', showOttOnly); // Sync class with current state
 
-        // Add home button (top left)
-        const homeButton = document.createElement('button');
-        homeButton.id = 'home-btn';
-        homeButton.className = 'home-btn';
-        homeButton.textContent = 'Home';
-        homeButton.style.position = 'absolute';
-        homeButton.style.top = '20px';
-        homeButton.style.left = '20px';
-        movieList.appendChild(homeButton);
+        // Reuse or create home button (top left)
+        let homeButton = document.getElementById('home-btn');
+        if (!homeButton) {
+            homeButton = document.createElement('button');
+            homeButton.id = 'home-btn';
+            homeButton.className = 'home-btn';
+            homeButton.textContent = 'Home';
+            homeButton.style.position = 'absolute';
+            homeButton.style.top = '20px';
+            homeButton.style.left = '20px';
+            movieList.appendChild(homeButton);
+        }
 
         const start = (page - 1) * moviesPerPage;
         const end = Math.min(start + moviesPerPage, allMovies.length);
@@ -114,9 +121,13 @@ async function fetchMovies(language, page = 1) {
             : allMovies.slice(start, end);
 
         if (currentPageMovies.length === 0) {
-            movieList.innerHTML = '<p>No movies found.</p>';
+            movieList.innerHTML += '<p>No movies found.</p>';
             return;
         }
+
+        // Clear existing movies before adding new ones
+        const existingMovies = movieList.querySelectorAll('.movie');
+        existingMovies.forEach(movie => movie.remove());
 
         for (let movie of currentPageMovies) {
             let otts = movie.otts || 'Not on OTT yet';
@@ -165,6 +176,10 @@ async function fetchMovies(language, page = 1) {
         } else {
             pagination.innerHTML += `<div>Showing all ${allMovies.length} ${language === 'ml' ? 'Malayalam' : language === 'hi' ? 'Hindi' : language === 'ta' ? 'Tamil' : ''} movies</div>`;
         }
+
+        // Re-add event listeners after rendering
+        addOttToggleListener();
+        addHomeButtonListener();
     } catch (error) {
         console.error('Error fetching movies:', error);
         movieList.innerHTML = '';
@@ -180,23 +195,30 @@ async function fetchMovies(language, page = 1) {
             headingContainer.appendChild(heading);
             movieList.appendChild(headingContainer);
 
-            const ottToggleButton = document.createElement('button');
-            ottToggleButton.id = 'toggle-ott-btn';
-            ottToggleButton.className = 'toggle-btn';
-            ottToggleButton.textContent = 'Toggle OTT Only';
-            ottToggleButton.style.position = 'absolute';
-            ottToggleButton.style.top = '20px';
-            ottToggleButton.style.right = '20px';
-            movieList.appendChild(ottToggleButton);
+            let ottToggleButton = document.getElementById('toggle-ott-btn');
+            if (!ottToggleButton) {
+                ottToggleButton = document.createElement('button');
+                ottToggleButton.id = 'toggle-ott-btn';
+                ottToggleButton.className = 'toggle-btn';
+                ottToggleButton.textContent = 'Toggle OTT Only';
+                ottToggleButton.style.position = 'absolute';
+                ottToggleButton.style.top = '20px';
+                ottToggleButton.style.right = '20px';
+                movieList.appendChild(ottToggleButton);
+            }
+            ottToggleButton.classList.toggle('toggled', showOttOnly);
 
-            const homeButton = document.createElement('button');
-            homeButton.id = 'home-btn';
-            homeButton.className = 'home-btn';
-            homeButton.textContent = 'Home';
-            homeButton.style.position = 'absolute';
-            homeButton.style.top = '20px';
-            homeButton.style.left = '20px';
-            movieList.appendChild(homeButton);
+            let homeButton = document.getElementById('home-btn');
+            if (!homeButton) {
+                homeButton = document.createElement('button');
+                homeButton.id = 'home-btn';
+                homeButton.className = 'home-btn';
+                homeButton.textContent = 'Home';
+                homeButton.style.position = 'absolute';
+                homeButton.style.top = '20px';
+                homeButton.style.left = '20px';
+                movieList.appendChild(homeButton);
+            }
 
             for (let movie of filteredManual) {
                 const movieDiv = document.createElement('div');
@@ -210,6 +232,10 @@ async function fetchMovies(language, page = 1) {
                 `;
                 movieList.appendChild(movieDiv);
             }
+
+            // Re-add event listeners in catch block
+            addOttToggleListener();
+            addHomeButtonListener();
         }
         document.getElementById('pagination').innerHTML = '';
     }
@@ -219,12 +245,20 @@ async function fetchMovies(language, page = 1) {
 function addOttToggleListener() {
     const ottToggleButton = document.getElementById('toggle-ott-btn');
     if (ottToggleButton) {
-        ottToggleButton.addEventListener('click', () => {
+        console.log('OTT Toggle button found, adding listener');
+        ottToggleButton.removeEventListener('click', ottToggleButton.listener); // Remove old listener to avoid duplicates
+        ottToggleButton.listener = () => {
             showOttOnly = !showOttOnly;
-            ottToggleButton.classList.toggle('toggled', showOttOnly); // Toggle the 'toggled' class
-            const language = currentLanguage; // Use the current language
-            fetchMovies(language, currentPage); // Re-render with the current page
-        });
+            console.log('Toggle state changed to:', showOttOnly);
+            console.log('Class list before toggle:', ottToggleButton.classList);
+            ottToggleButton.classList.toggle('toggled', showOttOnly);
+            console.log('Class list after toggle:', ottToggleButton.classList);
+            const language = currentLanguage;
+            fetchMovies(language, currentPage);
+        };
+        ottToggleButton.addEventListener('click', ottToggleButton.listener);
+    } else {
+        console.error('OTT Toggle button not found in the document.');
     }
 }
 
@@ -243,6 +277,8 @@ function addHomeButtonListener() {
             const ottToggleButton = document.getElementById('toggle-ott-btn');
             if (ottToggleButton) ottToggleButton.classList.remove('toggled'); // Reset OTT button color
         });
+    } else {
+        console.error('Home button not found in the document.');
     }
 }
 
@@ -256,9 +292,6 @@ document.querySelectorAll('.language-btn').forEach(button => {
         allMovies = []; // Reset movies on language change
         showOttOnly = false; // Reset toggle state
         document.getElementById('language-selection').style.display = 'none';
-        fetchMovies(language, currentPage).then(() => {
-            addOttToggleListener(); // Add OTT toggle listener after rendering
-            addHomeButtonListener(); // Add Home button listener after rendering
-        });
+        fetchMovies(language, currentPage);
     });
 });
